@@ -24,6 +24,9 @@ def forward_viterbi(obs, states, start_p, trans_p, emit_p):
    total = 0
    argmax = None
    valmax = 0
+
+   #unnneeded comment here.
+   
    for state in states:
        (prob, v_path, v_prob) = T[state]
        total += prob
@@ -50,6 +53,9 @@ def example():
         'Rainy' : {'walk': 0.1, 'shop': 0.4, 'clean': 0.5},
         'Sunny' : {'walk': 0.6, 'shop': 0.3, 'clean': 0.1},
         }
+
+    unneeded_obj = { 'foo' }
+
 
     return forward_viterbi(observations,
                            states,
