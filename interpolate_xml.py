@@ -26,9 +26,9 @@ def main(argv):
     end_xml = args[1];
 
     if not os.path.exists(start_xml):
-        parser.error("Couldn't find start_xml file " + start_xml)
+        parser.error("Couldn't find start.xml file " + start_xml)
     if not os.path.exists(end_xml):
-        parser.error("Couldn't find end_xml file " + end.xml)
+        parser.error("Couldn't find end.xml file " + end_xml)
     
     try:
         top_step = int(args[2]);
@@ -36,17 +36,17 @@ def main(argv):
         parser.error("Couldn't convert top_step to int");
 
     try:
-        step = int(args[3]);
+        current_step = int(args[3]);
     except ValueError:
-        parser.error("Couldn't convert step to int");
+        parser.error("Couldn't convert current_step to int");
 
-    if top_step < 0 or step < 0 or step > top_step:
-        parser.error("step should be less than or equal to top_step, "
+    if top_step < 0 or current_step < 0 or current_step > top_step:
+        parser.error("current_step should be less than or equal to top_step, "
                      "and both should be positive")
 
     parser.destroy()
 
-    tree = interpolate_xml(start_xml, end_xml, top_step, step)
+    tree = interpolate_xml(start_xml, end_xml, top_step, current_step)
 
     sys.stdout.write(etree.tostring(tree) + "\n")
 
@@ -70,7 +70,7 @@ def find_data(xml_stream):
             result.append(float(el.text))
     return result
 
-def interpolate_xml(start_xml, end_xml, top_step, step):
+def interpolate_xml(start_xml, end_xml, top_step, current_step):
     # get numbers from end_xml
     end_data = find_data(open(end_xml));
     tree = etree.parse(open(start_xml))
@@ -98,7 +98,7 @@ def interpolate_xml(start_xml, end_xml, top_step, step):
                                  "tag: " + el.tag + " text: " + el.text + "\n")
             end = float(end)
             start = float(el.text)
-            interpolated = start + ((end - start) / top_step) * step
+            interpolated = start + ((end - start) / top_step) * current_step
             if isint:
                 interpolated = int(round(interpolated))
             el.text = str(interpolated)
