@@ -87,7 +87,6 @@ def interpolate_xml(start_xml, end_xml, top_step, current_step):
                                  "than in end_xml - files not matched up\n")
                 break
             isint = int_pattern.match(el.text) is not None
-            print str(isint) + ' ' + el.text
             if isint and not isinstance(end, int):
                 sys.stderr.write("error! found an int in start_xml and "
                                  "a float in end_xml.\n"
