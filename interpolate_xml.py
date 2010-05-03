@@ -13,10 +13,10 @@ import os
 def main(argv):
     import optparse
 
-    parser = optparse.OptionParser(usage='usage: %prog start_xml end_xml top_step current_step',
+    parser = optparse.OptionParser(usage='usage: %prog start.xml end.xml top_step current_step',
                  version='%prog 0.1',
                  description="Compute step [current_step] of 0 to [top_step] steps between a given start and end xml file, replacing any numeric values with interpolated values.  Outputs a new xml file on standard out.",
-                 epilog="If current_step is 0, the values from start_xml are used; if current_step is top_step, the values from end_xml are used.  Thus there are top_step + 1 total steps (including step 0.)  If integer values occur in start_xml (they don't have a decimal point) then the interpolated value will be rounded to the nearest integer.")
+                 epilog="If current_step is 0, the values from start.xml are used; if current_step is top_step, the values from end.xml are used.  Thus there are top_step + 1 total steps (including step 0.)  If integer values occur in start.xml (they don't have a decimal point) then the interpolated value will be rounded to the nearest integer.")
     opts, args = parser.parse_args(argv)
 
     if len(args) != 4:
