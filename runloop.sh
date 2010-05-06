@@ -33,8 +33,8 @@ while test $I -le $LIMIT; do
     python interpolate_xml.py $STARTXML $ENDXML $LIMIT $I > $CURRENT_XML
     
     INPUT_PICNO_0=`expr $I \* PIX_PER_HDRGROUP`
-    INPUT_PICNO_1=`expr $INPUT_PICNO_1 + 1`
-    INPUT_PICNO_2=`expr $INPUT_PICNO_1 + 2`
+    INPUT_PICNO_1=`expr $INPUT_PICNO_0 + 1`
+    INPUT_PICNO_2=`expr $INPUT_PICNO_0 + 2`
 
     # call yr thinger
     arseome_hdr_combiner --configfile=$CURRENT_XML --outfile=out${I}.jpg $INPUT_PICNO_0 $INPUT_PICNO_1 $INPUT_PICNO_2 > log$INPUT_PICNO_0
