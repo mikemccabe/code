@@ -32,7 +32,7 @@ while test $I -le $LIMIT; do
     echo $I
     python interpolate_xml.py $STARTXML $ENDXML $LIMIT $I > $CURRENT_XML
     
-    INPUT_PICNO_0=`expr $I \* PIX_PER_HDRGROUP`
+    INPUT_PICNO_0=`expr $I \* $PIX_PER_HDRGROUP`
     INPUT_PICNO_1=`expr $INPUT_PICNO_0 + 1`
     INPUT_PICNO_2=`expr $INPUT_PICNO_0 + 2`
 
