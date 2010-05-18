@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+
+"""
+Copyright(c)2010 Mike McCabe. Software license AGPL version 3.
+"""
 
 def main(argv):
     import optparse
