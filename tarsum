@@ -1,6 +1,8 @@
 #! /usr/bin/env python
  
 # Copyright (C) 2008-2009 by Guy Rutenberg
+# Modified 2011 by Mike McCabe.  Original from
+# http://www.guyrutenberg.com/2009/04/29/tarsum-02-a-read-only-version-of-tarsum/
  
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +30,7 @@ def tarsum(input_file, hash, output_file):
         """
         tar = tarfile.open(mode="r|*", fileobj=input_file)
  
-        chunk_size = 100*1024
+        chunk_size = 512*1024
         store_digests = {}
  
         for member in tar:
@@ -41,12 +43,40 @@ def tarsum(input_file, hash, output_file):
                 h.update(data)
                 data = f.read(chunk_size)
             output_file.write("%s  %s\n" % (h.hexdigest(), member.name))
- 
+            output_file.flush()
+        output_file.write("%s  %s\n" % (input_file.hexdigest(), "TOTAL"))
+
+
+class hashing_file(object):
+    """
+    Wrap a file object, hashing all data as it's read.  If pipe is
+    supplied, also write all data to stdout.
+    """
+    def __init__(self, fileobj, hash, pipe=False):
+        self.fileobj = fileobj
+        self.h = hashlib.new(hash)
+        self.pipe = pipe
+
+    def read(self, size):
+        data = self.fileobj.read(size)
+        self.h.update(data)
+        if self.pipe:
+            sys.stdout.write(data)
+        return data
+
+    def __getattr__(self, name):
+        return getattr(self.fileobj, name)
+
+    def hexdigest(self):
+        return self.h.hexdigest()
+
+
 def main():
     parser = OptionParser()
  
-    version=("%prog 0.2.1\n"
-             "Copyright (C) 2008-2009 Guy Rutenberg <http://www.guyrutenberg.com/contact-me>")
+    version=("%prog 0.2.2\n"
+             "Copyright (C) 2008-2009 Guy Rutenberg <http://www.guyrutenberg.com/contact-me>"
+             "Modified 2011 Mike McCabe")
     usage=("%prog [options] TARFILE\n"
            "Print a checksum signature for every file in TARFILE.\n"
            "With no FILE, or when FILE is -, read standard input.")
@@ -56,8 +86,14 @@ def main():
         default="md5")
     parser.add_option("-o", "--output", dest="output", type="string",
         help="save signatures to FILE.", metavar="FILE")
- 
+    parser.add_option("-p", "--pipe", action="store_true",
+                      help="copy input to output, for use in pipe.")
+
     (option, args) = parser.parse_args()
+
+    if option.pipe and not option.output:
+        parser.error("--pipe option requires that --output also be specified")
+    parser.destroy()
  
     output_file = sys.stdout
     if option.output:
@@ -67,8 +103,11 @@ def main():
     if len(args)==1 and args[0]!="-":
         input_file = open(args[0], "r")
  
+    input_file = hashing_file(input_file, option.checksum, option.pipe)
+
     tarsum(input_file, option.checksum, output_file)
- 
+
+
 if __name__ == "__main__":
     from optparse import OptionParser
     import sys
