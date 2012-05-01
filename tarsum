@@ -31,8 +31,7 @@ def tarsum(input_file, hash, output_file):
         tar = tarfile.open(mode="r|*", fileobj=input_file)
  
         chunk_size = 512*1024
-        store_digests = {}
- 
+
         for member in tar:
             if not member.isfile():
                 continue
