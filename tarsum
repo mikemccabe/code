@@ -36,6 +36,9 @@ def tarsum(input_file, hash, output_file):
         for member in tar:
             if not member.isfile():
                 continue
+            m = re.search('\._[^/]+$',member.name)
+            if m is not None:
+                continue
             f = tar.extractfile(member)
             h = hashlib.new(hash)
             data = f.read(chunk_size)
@@ -45,8 +48,7 @@ def tarsum(input_file, hash, output_file):
             output_file.write("%s  %s\n" % (h.hexdigest(), member.name))
             output_file.flush()
         output_file.write("%s  %s\n" % (input_file.hexdigest(), "TOTAL"))
-
-
+                
 class hashing_file(object):
     """
     Wrap a file object, hashing all data as it's read.  If pipe is
